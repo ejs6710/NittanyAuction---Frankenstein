@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>
+        User Profile page
+    </title>
+
+    <style>
+        .logout_button {
+            position: absolute;
+            font-size: 24px;
+            top: 25px;
+            right: 25px;
+        }
+    </style>
+
+    <style>
+        .left_button {
+            display: flex;
+            font-size: 16px;
+            flex-direction: column;
+            gap: 10px;
+            margin-top:50px;
+        }
+    </style>
+
+    <style>
+        .home_button {
+            position: absolute;
+            font-size: 24px;
+            top: 25px;
+        }
+    </style>
+
+</head>
+<body>
+
+<!--  -->
+<!-- Home button -->
+ <a href= "/Home">
+     <button class = "home_button">Home</button>
+ </a>
+
+<div class = "container">
+ <!-- Uses the User to determine which text to display -->
+    <h1 style="text-align: center">
+        {% if role == 'Bidders' %}
+            Bidder Profile
+        {% elif role == 'Sellers' %}
+            Seller Profile
+        {% elif role == 'Helpdesk' %}
+            Helpdesk Profile
+        {% else %}
+            User Profile
+        {% endif %}
+</h1>
+    <!-- Welcome Message -->
+    <h2 style="text-align: center">
+        Welcome Back, {{ email }}
+    </h2>
+
+</div>
+
+
+<!--Logout button  -->
+ <a href="/login">
+
+     <button class="logout_button">Logout</button>
+ </a>
+
+<a href="/Personal_Information">
+    <button class="left_button">Personal Information</button>
+</a>
+
+</div>
+
+</body>
+</html>
