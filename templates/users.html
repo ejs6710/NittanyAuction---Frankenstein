@@ -12,9 +12,49 @@
     <div class="card shadow-sm">
         <div class="card-body p-4">
             <h3 class="card-title">Welcome, User!</h3>
-            <p class="text-muted">⚠️ You are logged in as a <strong> {{ email }} </strong> with no specific role.</p>
+            <p class="text-muted">⚠️ You are logged in as a <strong> {{ email }} </strong> with no specific role. Please input the following information to be added as a Bidder.</p>
             <hr>
-            <a href="/login" class="btn btn-outline-secondary">Log Out</a>
+                <form action = "/Update_Info" method = "POST"> #
+
+                    <div class="form-group">
+                        <label for="First_Name">First name</label>
+                        <input name="First_Name" class="form-control" placeholder="" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Last_Name">Last Name</label>
+                        <input name="Last_Name" class="form-control" placeholder="" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Age">Age</label>
+                        <input name="Age" class="form-control" placeholder="" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Zipcode">Zipcode</label>
+                        <input name="Zipcode" class="form-control" placeholder="" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Street_Number">Street Number</label>
+                        <input name="Street_Number" class="form-control" placeholder="" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Street_Name">Street Name</label>
+                        <input name="Street_Name" class="form-control" placeholder="" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Major">Major</label>
+                        <input name="Major" class="form-control" placeholder="" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Update Information</button>
+            </form>
+
+
         </div>
     </div>
 </div>
