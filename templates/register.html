@@ -17,7 +17,7 @@
                 <div class="alert alert-danger">{{ error }}</div>
             {% endif %}
 
-            <form action="/login" method="POST">
+            <form action="/register" method="POST">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" name="email" class="form-control" placeholder="user@lsu.edu" required>
@@ -26,12 +26,16 @@
                     <label for="password">Password</label>
                     <input type="password" name="password" class="form-control" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" name="confirm_password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
             </form>
             <hr>
-                <p class="text-center mb-0">
-                    Don't have an account? <a href="/register">Register</a>
-                </p>
+            <p class="text-center mb-0">
+                Already have an account? <a href="/login">Log In</a>
+            </p>
         </div>
     </div>
 </div>

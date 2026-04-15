@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(python3:*)",
-      "Bash(sqlite3:*)"
+      "Bash(sqlite3:*)",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(gtimeout 5 python3 app.py)"
     ]
   }
 }
