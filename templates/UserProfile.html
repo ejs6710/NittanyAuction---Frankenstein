@@ -2,11 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
-    <title>
-        User Profile page
-    </title>
-
+    <title>User Profile page</title>
     <style>
         .logout_button {
             position: absolute;
@@ -14,67 +10,161 @@
             top: 25px;
             right: 25px;
         }
-    </style>
-
-    <style>
-        .left_button {
-            display: flex;
-            font-size: 16px;
-            flex-direction: column;
-            gap: 10px;
-            margin-top:50px;
-        }
-    </style>
-
-    <style>
         .home_button {
             position: absolute;
             font-size: 24px;
             top: 25px;
         }
-    </style>
 
+        /* Section header — matches helpdesk.html navy bar style */
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #1a3a5c;
+            padding: 8px 14px;
+            border-radius: 4px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        /* Field label — bold, no muted/small */
+        .field-label {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        /* Field value — normal weight */
+        .field-value {
+            margin-bottom: 16px;
+        }
+
+        /* Spacing between sections */
+        .section-block {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
 
-<!--  -->
-<!-- Home button -->
- <a href= "/Home">
-     <button class = "home_button">Home</button>
- </a>
-
-<div class = "container">
- <!-- Uses the User to determine which text to display -->
-    <h1 style="text-align: center">
-        {% if role == 'Bidders' %}
-            Bidder Profile
-        {% elif role == 'Sellers' %}
-            Seller Profile
-        {% elif role == 'Helpdesk' %}
-            Helpdesk Profile
-        {% else %}
-            User Profile
-        {% endif %}
-</h1>
-    <!-- Welcome Message -->
-    <h2 style="text-align: center">
-        Welcome Back, {{ email }}
-    </h2>
-
-</div>
-
-
-<!--Logout button  -->
- <a href="/login">
-
-     <button class="logout_button">Logout</button>
- </a>
-
-<a href="/Personal_Information">
-    <button class="left_button">Personal Information</button>
+<a href="/Home">
+    <button class="home_button">Home</button>
+</a>
+<a href="/logout">
+    <button class="logout_button">Logout</button>
 </a>
 
-</div>
+<div style="max-width: 700px; margin: 80px auto 60px auto; padding: 0 20px;">
 
+    <h1 style="text-align: center;">User Profile</h1>
+    <h3 style="text-align: center; color: #6c757d;">{{ email }}</h3>
+
+    <!-- ══════════════════════════════════════════
+         PERSONAL INFORMATION — always shown
+    ══════════════════════════════════════════ -->
+    <div class="section-title">Personal Information</div>
+
+    {% if profile_data %}
+        <div class="section-block">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px;">
+                <div>
+                    <p class="field-label">First Name</p>
+                    <p class="field-value">{{ profile_data.first_name }}</p>
+                </div>
+                <div>
+                    <p class="field-label">Last Name</p>
+                    <p class="field-value">{{ profile_data.last_name }}</p>
+                </div>
+                <div>
+                    <p class="field-label">Age</p>
+                    <p class="field-value">{{ profile_data.age }}</p>
+                </div>
+                <div>
+                    <p class="field-label">Major</p>
+                    <p class="field-value">{{ profile_data.major }}</p>
+                </div>
+            </div>
+
+            <p class="field-label">Home Address</p>
+            <p class="field-value">
+                {% if profile_data.street_num %}
+                    {{ profile_data.street_num }} {{ profile_data.street_name }}, {{ profile_data.zipcode }}
+                {% else %}
+                    No address on file.
+                {% endif %}
+            </p>
+
+            <p class="field-label">Credit Cards</p>
+            {% if profile_data.credit_cards %}
+                <table style="width: 100%; max-width: 500px; border-collapse: collapse; margin-bottom: 16px;">
+                    <thead>
+                        <tr style="background-color: #f2f2f2;">
+                            <th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">Card Number</th>
+                            <th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">Type</th>
+                            <th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">Expires</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for card in profile_data.credit_cards %}
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #dee2e6;">{{ card.number }}</td>
+                            <td style="padding: 8px; border: 1px solid #dee2e6;">{{ card.type }}</td>
+                            <td style="padding: 8px; border: 1px solid #dee2e6;">{{ card.expire_month }}/{{ card.expire_year }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="field-value">No credit cards on file.</p>
+            {% endif %}
+
+            <a href="/Personal_Information" style="display: inline-block; margin-top: 8px; padding: 8px 18px; background-color: #a6c1de; color: rgb(0, 0, 0); text-decoration: none; border-radius: 4px;">Edit Profile</a>
+        </div>
+
+    {% else %}
+        <p>No personal information on file. Please complete your profile.</p>
+        <a href="/Update_Info" style="display: inline-block; padding: 8px 18px; background-color: #1a3a5c; color: white; text-decoration: none; border-radius: 4px;">Complete Registration</a>
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════
+         SELLER DASHBOARD — only if role is Seller
+    ══════════════════════════════════════════ -->
+    {% if role == 'Sellers' %}
+        <div class="section-title">Seller Dashboard</div>
+
+        <div class="section-block">
+            <p class="field-label">Routing Number</p>
+            <p class="field-value">{{ profile_data.bank_routing_number }}</p>
+
+            <p class="field-label">Account Number</p>
+            <p class="field-value">{{ profile_data.bank_account_number }}</p>
+
+            <p class="field-label">Balance</p>
+            <p class="field-value">${{ profile_data.balance }}</p>
+        </div>
+
+        {% if profile_data.vendor %}
+            <div class="section-title">Local Vendor Details</div>
+            <div class="section-block">
+                <p class="field-label">Business Name</p>
+                <p class="field-value">{{ profile_data.vendor.business_name }}</p>
+
+                <p class="field-label">Customer Service Phone</p>
+                <p class="field-value">{{ profile_data.vendor.phone }}</p>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════
+         HELPDESK LINK — only if role is Helpdesk
+    ══════════════════════════════════════════ -->
+    {% if role == 'Helpdesk' %}
+        <div class="section-title">HelpDesk</div>
+        <div class="section-block">
+            <a href="/helpdesk" style="display: inline-block; padding: 8px 18px; background-color: #a6c1de; color: rgb(0, 0, 0); text-decoration: none; border-radius: 4px;">Go to HelpDesk Dashboard</a>
+        </div>
+    {% endif %}
+
+</div>
 </body>
 </html>

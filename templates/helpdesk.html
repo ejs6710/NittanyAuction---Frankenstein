@@ -6,17 +6,102 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <title>NittanyAuction - HelpDesk</title>
+<style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            color: #0a1931;
+        }
+ 
+        .logout_button {
+            position: absolute;
+            font-size: 24px;
+            top: 25px;
+            right: 25px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+ 
+        .home_button {
+            position: absolute;
+            font-size: 24px;
+            top: 25px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+ 
+        h1 {
+            color: #0a1931;
+            font-size: 2rem;
+        }
+ 
+        h3 {
+            color: #1a3a5c;
+        }
+ 
+        .position-badge {
+            display: inline-block;
+            background-color: #1a3a5c;
+            color: #ffffff;
+            padding: 4px 14px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            margin-top: 6px;
+        }
+ 
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #1a3a5c;
+            padding: 8px 14px;
+            border-radius: 4px;
+            margin-top: 36px;
+            margin-bottom: 16px;
+        }
+ 
+        ul {
+            padding-left: 20px;
+        }
+ 
+        ul li {
+            line-height: 2.2;
+            border-bottom: 1px solid #d0dce8;
+            padding-bottom: 4px;
+        }
+ 
+        ul li:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
-<body class="bg-light">
-<div class="container" style="margin-top: 80px;">
-    <div class="card shadow-sm">
-        <div class="card-body p-4">
-            <h3 class="card-title">Welcome, HelpDesk!</h3>
-            <p class="text-muted">You are logged in as a <strong>{{ email }}</strong>.</p>
-            <hr>
-            <a href="/login" class="btn btn-outline-secondary">Log Out</a>
-        </div>
-    </div>
+<body>
+ 
+<a href="/Home">
+    <button class="home_button">Home</button>
+</a>
+ 
+<a href="/logout">
+    <button class="logout_button">Logout</button>
+</a>
+ 
+<div style="max-width: 700px; margin: 80px auto 40px auto; padding: 0 20px;">
+ 
+    <h1 style="text-align: center;">HelpDesk Dashboard</h1>
+    <h3 style="text-align: center;">{{ email }}</h3>
+    <p style="text-align: center;">
+        <span class="position-badge">{{ position }}</span>
+    </p>
+ 
+    <div class="section-title">Below will be link that redirect to specific func page</div>
+ 
+    <ul>
+        <li><strong>Authentication:</strong> Verify user credentials before allowing access to platform features.</li>
+        <li><strong>UserID Change:</strong> Handle requests from Bidders and Sellers wanting to change the userID (email address).</li>
+        <li><strong>Seller Approval:</strong> Accept or reject requests for Seller accounts whether it be preexisting Bidders or local vendors.</li>
+        <li><strong>Category Hierarchy Approval:</strong> Approve or reject requests from Sellers to create a new category hierarchy.</li>
+        <li><strong>Marketing Analysis:</strong> Run data analysis (auctions by seller major, gross platform revenue, etc.) on gathered data to support future decision making.</li>
+        <li><strong>System Oversight:</strong> Manage spam accounts, resolve seller/bidder conflicts, and ensure uptime.</li>
+        <li><strong>Logging:</strong> All requests sent to the HelpDesk must be logged.</li>
+    </ul>
+ 
 </div>
 </body>
 </html>
