@@ -27,6 +27,13 @@ def login_required(f):
     return decorated
 
 app.secret_key = hash_password("12314214151241")
+
+
+# This filter exists because of a parsing bug when searching through categories and using that category raw string in th e URL
+# When "sports & outdoors" gets put in the url as a param, then it shorts it and only reads category "sports", so convert to URLENCODE
+from urllib.parse import quote
+app.jinja_env.filters['urlencode'] = lambda s: quote(str(s))  
+
 @app.route('/')
 def index():
 	return render_template('login.html')
@@ -113,10 +120,63 @@ def register(): # user registration
  
     return render_template('register.html', error=error)
 
-@app.route(rule='/Home', methods=['GET', 'POST'])
-def home(): #Reroutes to home page
-	error = None
-	return render_template('Home.html', error=error)
+@app.route(rule='/Home', methods=['GET'])
+@login_required
+def home():
+    cat = request.args.get('cat', None) # read url params so we can store data between reloads
+    connection = connect()
+
+    # always load top level categories for the sidebar
+    top_level = [r[0] for r in connection.execute(
+        "SELECT category_name FROM Categories WHERE parent_category = 'Root' ORDER BY category_name"
+    ).fetchall()]
+
+    # get subcategories so we can expand the sidebar on click
+    subcategories = []
+    if cat:
+        subcategories = [r[0] for r in connection.execute(
+            "SELECT category_name FROM Categories WHERE parent_category = ? ORDER BY category_name",
+            (cat,)
+        ).fetchall()]
+
+    # get listings, if a category is selected grab all its children recursively too
+    if cat:
+        listings = connection.execute(  # had to look up some code for this I wont lie.... - arno
+            """WITH RECURSIVE descendants(cat) AS (
+                   SELECT ?
+                   UNION ALL
+                   SELECT c.category_name
+                   FROM Categories c
+                   JOIN descendants d ON c.parent_category = d.cat
+               )
+               SELECT al.listing_id, al.seller_email, al.auction_title, al.product_name,
+                      al.product_description, al.reserve_price, al.max_bids,
+                      COUNT(b.bid_id) AS bid_count
+               FROM Auction_Listings al
+               LEFT JOIN Bids b ON b.seller_email = al.seller_email AND b.listing_id = al.listing_id
+               WHERE al.category IN (SELECT cat FROM descendants) AND al.status = 1
+               GROUP BY al.listing_id, al.seller_email
+               ORDER BY al.auction_title""",
+            (cat,)
+        ).fetchall()
+    else:
+        listings = connection.execute(
+            """SELECT al.listing_id, al.seller_email, al.auction_title, al.product_name,
+                      al.product_description, al.reserve_price, al.max_bids,
+                      COUNT(b.bid_id) AS bid_count
+               FROM Auction_Listings al
+               LEFT JOIN Bids b ON b.seller_email = al.seller_email AND b.listing_id = al.listing_id
+               WHERE al.status = 1
+               GROUP BY al.listing_id, al.seller_email
+               ORDER BY al.auction_title"""
+        ).fetchall()
+
+    connection.close()
+    return render_template('Home.html',
+                           top_level=top_level,
+                           subcategories=subcategories,
+                           selected_cat=cat,
+                           listings=listings)
  
 @app.route('/UserProfile', methods=['GET'])
 @login_required
@@ -165,7 +225,7 @@ def user_profile():
             }
  
     elif role == 'Sellers':
-        # Sellers are also bidders — fetch personal info from Bidders + Address
+        # sellers are also bidders so grab their personal info too
         bidder_row = connection.execute(
             """SELECT b.first_name, b.last_name, b.age, b.major,
                       a.street_num, a.street_name, a.zipcode
@@ -195,7 +255,7 @@ def user_profile():
  
         if bidder_row or seller_row:
             profile_data = {
-                # Bidder / personal fields
+                # bidder info
                 'first_name'  : bidder_row[0] if bidder_row else None,
                 'last_name'   : bidder_row[1] if bidder_row else None,
                 'age'         : bidder_row[2] if bidder_row else None,
@@ -208,7 +268,7 @@ def user_profile():
                      'expire_month': c[2], 'expire_year': c[3]}
                     for c in cards
                 ],
-                # Seller fields
+                # seller info
                 'bank_routing_number' : seller_row[0] if seller_row else None,
                 'bank_account_number' : seller_row[1] if seller_row else None,
                 'balance'             : seller_row[2] if seller_row else None,

@@ -18,5 +18,35 @@
      <button class = "profile_button">Profile</button>
  </a>
 
+<!-- Categories -->
+<h3>Browse by Category</h3>
+<a href="/Home">All</a>
+{% for cat in top_level %}
+    | <a href="/Home?cat={{ cat | urlencode }}">{{ cat }}</a>
+{% endfor %}
+
+{% if selected_cat %}
+    <h4>Subcategories of {{ selected_cat }}</h4>
+    {% for sub in subcategories %}
+        <a href="/Home?cat={{ sub | urlencode }}">{{ sub }}</a> |
+    {% endfor %}
+{% endif %}
+
+<!-- Listings -->
+<h3>{{ selected_cat if selected_cat else 'All Active Listings' }}</h3>
+{% if listings %}
+    {% for l in listings %}
+        <div>
+            <b>{{ l[2] }}</b> — {{ l[3] }}<br>
+            {{ l[4] }}<br>
+            Bids: {{ l[7] }} / {{ l[6] }} &nbsp;|&nbsp; Seller: {{ l[1] }}<br>
+            <a href="#">View & Bid</a>
+        </div>
+        <hr>
+    {% endfor %}
+{% else %}
+    <p>No active listings{% if selected_cat %} in {{ selected_cat }}{% endif %}.</p>
+{% endif %}
+
 </body>
 </html>
